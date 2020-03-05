@@ -1,0 +1,13 @@
+Package: OPGD
+Type: Package
+Title: Optimal Projections for Gaussian Discriminants
+Version: 0.1.0
+Author: David P. Hofmeyr [aut, cre] and Francois Kamper [aut]
+Maintainer: David P. Hofmeyr <dhofmeyr@sun.ac.za>
+Description: Obtains optimal projections for the purpose of class discrimination under the assumption of Gaussian class densities.
+  The method uses the full classification likelihood during optimisation to improve over existing methods based on a simpler proxy.
+Depends: R (>= 2.10.0)
+Imports: stats, rARPACK
+License: GPL
+Encoding: UTF-8
+LazyData: true
