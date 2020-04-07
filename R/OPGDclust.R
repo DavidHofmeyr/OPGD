@@ -37,9 +37,9 @@ OPGDcluster <- function(X, k, V0 = NULL, ndim = NULL, omega = NULL, standardise 
         E <- eigen(S[[kk]])
         E$values <- Re(E$values)
         E$vectors <- Re(E$vectors)
-        E$values[E$values<.Machine$doule.eps] <- Inf
+        E$values[E$values<.Machine$doule.xmin] <- Inf
         d2 <- rowSums((trX%*%E$vectors%*%diag(1/E$values^.5))^2)
-        p[,kk] <- exp(-d2/2)*PI[kk]/(prod(E$values[which(is.finite(E$values))])+.Machine$double.eps)^.5 + .Machine$double.eps
+        p[,kk] <- exp(-d2/2)*PI[kk]/(prod(E$values[which(is.finite(E$values))])+.Machine$double.xmin)^.5 + .Machine$double.xmin
       }
       p <- p/rowSums(p)
       if(max(abs(p-pold))<1e-6) break
@@ -87,7 +87,7 @@ OPGDcluster <- function(X, k, V0 = NULL, ndim = NULL, omega = NULL, standardise 
       trX <- sweep(X, 2, MU[kk,], '-')%*%V
       s <- sqrt(diag(t(V)%*%S[[kk]]%*%V))
       d2 <- rowSums((trX/matrix(s, nrow(X), ncol(V), byrow = TRUE))^2)
-      p[,kk] <- exp(-d2/2)*PI[kk]/(prod(s)+.Machine$double.eps)
+      p[,kk] <- exp(-d2/2)*PI[kk]/(prod(s)+.Machine$double.xmin)
     }
     ll <- sum(log(rowSums(p)))
     p <- p/rowSums(p)
@@ -110,7 +110,7 @@ OPGDcluster <- function(X, k, V0 = NULL, ndim = NULL, omega = NULL, standardise 
       trX <- sweep(X, 2, MUo[kk,], '-')%*%V
       s <- sqrt(diag(t(V)%*%So[[kk]]%*%V))
       d2 <- rowSums((trX/matrix(s, nrow(X), ncol(V), byrow = TRUE))^2)
-      p[,kk] <- exp(-d2/2)*PIo[kk]/(prod(s)+.Machine$double.eps)
+      p[,kk] <- exp(-d2/2)*PIo[kk]/(prod(s)+.Machine$double.xmin)
     }
     llo <- sum(log(rowSums(p)))
     p <- p/rowSums(p)
