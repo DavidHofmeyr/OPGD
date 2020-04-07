@@ -1,1 +1,4 @@
 exportPattern("^[[:alpha:]]+")
+importFrom("mclust", "Mclust")
+export('OPGD', 'OPGDcluster')
+S3method(predict, OPGD)
