@@ -24,9 +24,9 @@ fnb_G_2 <- function(V, tX, Y, MU, S, PI, N){
   T1 <- sum(N*PI*log(PI)-sapply(1:nc, function(k) N*PI[k]*sum(log(s[,k]+1e-100))/2+sum(.Internal(rowSums((x[,Y==k] - mu[k,])^2, d, N*PI[k], TRUE))/s[,k])/2))
 
   p <- numeric(N)
-  for(k in 1:nc) p <- p + exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/prod(s[,k]^.5)*PI[k]
+  for(k in 1:nc) p <- p + exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/prod(s[,k]^.5 + .Machine$double.eps)*PI[k] + .Machine$double.eps
 
-  T1 - sum(log(p+.Machine$double.eps))
+  T1 - sum(log(p))
 }
 
 dfnb_G_2 <- function(V, tX, Y, MU, S, PI, N, Joint = FALSE){
@@ -45,14 +45,14 @@ dfnb_G_2 <- function(V, tX, Y, MU, S, PI, N, Joint = FALSE){
   dv <- t(V*0)
   for(k in 1:nc) dv <- dv - ssv[[k]]*N*PI[k]
 
-  dets <- apply(s, 2, prod)^.5
+  dets <- apply(s, 2, prod)^.5 + .Machine$double.eps
 
   mu <- matrix(MU%*%V, ncol = d)
 
   x <- matrix(t(V)%*%tX, nrow = d)
 
   p <- matrix(0,N,nc)
-  for(k in 1:nc) p[,k] <- exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/dets[k]*PI[k]
+  for(k in 1:nc) p[,k] <- exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/dets[k]*PI[k] + .Machine$double.eps
 
   ps <- rowSums(p)
 
