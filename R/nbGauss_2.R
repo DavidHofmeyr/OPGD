@@ -21,12 +21,12 @@ fnb_G_2 <- function(V, tX, Y, MU, S, PI, N){
 
   x <- matrix(t(V)%*%tX, nrow = d)
 
-  T1 <- sum(N*PI*log(PI)-sapply(1:nc, function(k) N*PI[k]*sum(log(s[,k]+1e-100))/2+sum(.Internal(rowSums((x[,Y==k] - mu[k,])^2, d, N*PI[k], TRUE))/s[,k])/2))
+  T1 <- sum(N*PI*log(PI)-sapply(1:nc, function(k) N*PI[k]*sum(log(s[,k]))/2+sum(.Internal(rowSums((x[,Y==k] - mu[k,])^2, d, N*PI[k], TRUE))/s[,k])/2))
 
   p <- numeric(N)
-  for(k in 1:nc) p <- p + exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/prod(s[,k]^.5 + .Machine$double.eps)*PI[k] + .Machine$double.eps
+  for(k in 1:nc) p <- p + exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/prod(s[,k]^.5)*PI[k]
 
-  T1 - sum(log(p))
+  T1 - sum(log(p+.Machine$double.xmin*(p==0)))
 }
 
 dfnb_G_2 <- function(V, tX, Y, MU, S, PI, N, Joint = FALSE){
@@ -45,14 +45,16 @@ dfnb_G_2 <- function(V, tX, Y, MU, S, PI, N, Joint = FALSE){
   dv <- t(V*0)
   for(k in 1:nc) dv <- dv - ssv[[k]]*N*PI[k]
 
-  dets <- apply(s, 2, prod)^.5 + .Machine$double.eps
+  dets <- apply(s, 2, prod)^.5
 
   mu <- matrix(MU%*%V, ncol = d)
 
   x <- matrix(t(V)%*%tX, nrow = d)
 
   p <- matrix(0,N,nc)
-  for(k in 1:nc) p[,k] <- exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/dets[k]*PI[k] + .Machine$double.eps
+  for(k in 1:nc) p[,k] <- exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/dets[k]*PI[k]
+
+  p[p==0] <- .Machine$double.xmin
 
   ps <- rowSums(p)
 
@@ -83,7 +85,9 @@ fnb_G_3 <- function(V, tX, MU, S, PI, N, om = 0){
   x <- matrix(t(V)%*%tX, nrow = d)
 
   p <- matrix(0, N, nc)
-  for(k in 1:nc) p[,k] <- exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/prod(s[,k]^.5 + .Machine$double.eps)*PI[k] + .Machine$double.eps
+  for(k in 1:nc) p[,k] <- exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/prod(s[,k]^.5)*PI[k]
+
+  p[p==0] <- .Machine$double.xmin
 
   sum(log(apply(p, 1, function(x) max(x)/sum(x)))) - om*sum((t(V)%*%V-diag(d))^2)
 }
@@ -100,14 +104,16 @@ dfnb_G_3 <- function(V, tX, MU, S, PI, N, om){
   s <- matrix(sapply(1:nc, function(k) diag(t(V)%*%S[[k]]%*%V)), ncol = nc)
   sv <- lapply(S, function(s) s%*%V)
 
-  dets <- apply(s, 2, prod)^.5 + .Machine$double.eps
+  dets <- apply(s, 2, prod)^.5
 
   mu <- matrix(MU%*%V, ncol = d)
 
   x <- matrix(t(V)%*%tX, nrow = d)
 
   p <- matrix(0,N,nc)
-  for(k in 1:nc) p[,k] <- exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/dets[k]*PI[k] + .Machine$double.eps
+  for(k in 1:nc) p[,k] <- exp(-.Internal(colSums((x - mu[k,])^2/s[,k]/2, d, N, TRUE)))/dets[k]*PI[k]
+
+  p[p==0] <- .Machine$double.xmin
 
   Y <- apply(p, 1, which.max)
 
@@ -144,5 +150,7 @@ dfapp3 = function(V, tX, MU, S, PI, N, om){
   }
   out
 }
+
+
 
 
