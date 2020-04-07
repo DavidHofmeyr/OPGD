@@ -7,4 +7,4 @@ if(!'devtools' %in% installed.packages()) install.packages('devtools')
 
 devtools::install_github('DavidHofmeyr/OPGD')
 
-help(OPGD-package)
+help("OPGD-package")
