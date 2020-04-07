@@ -20,3 +20,17 @@
     omitted then this is set to n, the number of data.}
   \item{standardise}{(optional) logical. Should the data be standardised before applying clustering?}
 }
+\value{
+a named list with fields
+  \item{$V}{The optimal projection matrix.}
+  \item{$X}{The data matrix passed to the function as argument. If standardise is set to TRUE then
+            the output X will be the standardised version.}
+  \item{$y}{The vector of cluster labels.}
+  \item{$MU}{The matrix of component means (in the full dimensional space).}
+  \item{$S}{The list of component covariance matrices (in the full dimensional space).}
+  \item{$PI}{The vector of component mixing proportions.}
+  \item{$k}{The number of clusters/components.}
+  \item{$y0}{The clusters from the initial solution.}
+  \item{$posterior}{The matrix of estimated probabilities of membership of each datum to each component/cluster.}
+  \item{$V0}{The initial projection matrix.}
+}
