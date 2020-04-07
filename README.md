@@ -6,3 +6,5 @@ Optimal Projections for Gaussian Discriminants, based on the method in Hofmeyr e
 if(!'devtools' %in% installed.packages()) install.packages('devtools')
 
 devtools::install_github('DavidHofmeyr/OPGD')
+
+help(OPGD-package)
